@@ -1,0 +1,454 @@
+
+GccApplication2.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         0000027e  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  000002f2  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          000000cc  00800060  00800060  000002f2  2**0
+                  ALLOC
+  3 .comment      00000030  00000000  00000000  000002f2  2**0
+                  CONTENTS, READONLY
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000324  2**2
+                  CONTENTS, READONLY
+  5 .debug_aranges 00000038  00000000  00000000  00000360  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_info   000005e6  00000000  00000000  00000398  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_abbrev 0000053c  00000000  00000000  0000097e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_line   000002d1  00000000  00000000  00000eba  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_frame  000000b0  00000000  00000000  0000118c  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_str    00000317  00000000  00000000  0000123c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_loc    00000140  00000000  00000000  00001553  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_ranges 00000028  00000000  00000000  00001693  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	21 c0       	rjmp	.+66     	; 0x46 <__bad_interrupt>
+   4:	20 c0       	rjmp	.+64     	; 0x46 <__bad_interrupt>
+   6:	1f c0       	rjmp	.+62     	; 0x46 <__bad_interrupt>
+   8:	1e c0       	rjmp	.+60     	; 0x46 <__bad_interrupt>
+   a:	1d c0       	rjmp	.+58     	; 0x46 <__bad_interrupt>
+   c:	1c c0       	rjmp	.+56     	; 0x46 <__bad_interrupt>
+   e:	1b c0       	rjmp	.+54     	; 0x46 <__bad_interrupt>
+  10:	1a c0       	rjmp	.+52     	; 0x46 <__bad_interrupt>
+  12:	19 c0       	rjmp	.+50     	; 0x46 <__bad_interrupt>
+  14:	18 c0       	rjmp	.+48     	; 0x46 <__bad_interrupt>
+  16:	17 c0       	rjmp	.+46     	; 0x46 <__bad_interrupt>
+  18:	16 c0       	rjmp	.+44     	; 0x46 <__bad_interrupt>
+  1a:	15 c0       	rjmp	.+42     	; 0x46 <__bad_interrupt>
+  1c:	23 c0       	rjmp	.+70     	; 0x64 <__vector_14>
+  1e:	13 c0       	rjmp	.+38     	; 0x46 <__bad_interrupt>
+  20:	12 c0       	rjmp	.+36     	; 0x46 <__bad_interrupt>
+  22:	11 c0       	rjmp	.+34     	; 0x46 <__bad_interrupt>
+  24:	10 c0       	rjmp	.+32     	; 0x46 <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf e5       	ldi	r28, 0x5F	; 95
+  2c:	d4 e0       	ldi	r29, 0x04	; 4
+  2e:	de bf       	out	0x3e, r29	; 62
+  30:	cd bf       	out	0x3d, r28	; 61
+
+00000032 <__do_clear_bss>:
+  32:	21 e0       	ldi	r18, 0x01	; 1
+  34:	a0 e6       	ldi	r26, 0x60	; 96
+  36:	b0 e0       	ldi	r27, 0x00	; 0
+  38:	01 c0       	rjmp	.+2      	; 0x3c <.do_clear_bss_start>
+
+0000003a <.do_clear_bss_loop>:
+  3a:	1d 92       	st	X+, r1
+
+0000003c <.do_clear_bss_start>:
+  3c:	ac 32       	cpi	r26, 0x2C	; 44
+  3e:	b2 07       	cpc	r27, r18
+  40:	e1 f7       	brne	.-8      	; 0x3a <.do_clear_bss_loop>
+  42:	0c d0       	rcall	.+24     	; 0x5c <main>
+  44:	1a c1       	rjmp	.+564    	; 0x27a <_exit>
+
+00000046 <__bad_interrupt>:
+  46:	dc cf       	rjmp	.-72     	; 0x0 <__vectors>
+
+00000048 <PORTS>:
+	//}
+//}
+
+void PORTS()
+{
+	DDRB = 0xFF;
+  48:	8f ef       	ldi	r24, 0xFF	; 255
+  4a:	87 bb       	out	0x17, r24	; 23
+	DDRC = 0x00;
+  4c:	14 ba       	out	0x14, r1	; 20
+  4e:	08 95       	ret
+
+00000050 <ADC_set>:
+}
+void ADC_set()
+{
+	//Регистр выбора мультиплексора
+	ADMUX = (0 << REFS1) | (1 << REFS0) | (1 << ADLAR); //внутренний источник опорного напряжение - напряжение питания
+  50:	80 e6       	ldi	r24, 0x60	; 96
+  52:	87 b9       	out	0x07, r24	; 7
+	ADMUX |= (0 << MUX3) | (0 << MUX2) | (0 << MUX1) | (1 << MUX0); //ацп на ADC1
+  54:	38 9a       	sbi	0x07, 0	; 7
+	//ADC Status and Control Registor A - ADCSRA
+	//ставим 1 в 7 бит на разрешение работы АЦП
+	//ставим 1 в 5 бит на постоянную обработку сигнала
+	ADCSRA = (1 << ADEN) | (1 << ADSC)| (1 << ADFR) | (1 << ADIE) | (0 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
+  56:	8b ee       	ldi	r24, 0xEB	; 235
+  58:	86 b9       	out	0x06, r24	; 6
+  5a:	08 95       	ret
+
+0000005c <main>:
+}
+int main(void)
+{
+	PORTS();
+  5c:	f5 df       	rcall	.-22     	; 0x48 <PORTS>
+	ADC_set();
+  5e:	f8 df       	rcall	.-16     	; 0x50 <ADC_set>
+	//DB();
+	//arr_adc_processing()
+	sei(); //установка флага глобального прерывания
+  60:	78 94       	sei
+  62:	ff cf       	rjmp	.-2      	; 0x62 <main+0x6>
+
+00000064 <__vector_14>:
+	{
+		
+	}
+}
+ISR(ADC_vect)//обработчик прерываний
+{
+  64:	1f 92       	push	r1
+  66:	0f 92       	push	r0
+  68:	0f b6       	in	r0, 0x3f	; 63
+  6a:	0f 92       	push	r0
+  6c:	11 24       	eor	r1, r1
+  6e:	cf 92       	push	r12
+  70:	df 92       	push	r13
+  72:	ef 92       	push	r14
+  74:	ff 92       	push	r15
+  76:	2f 93       	push	r18
+  78:	3f 93       	push	r19
+  7a:	4f 93       	push	r20
+  7c:	5f 93       	push	r21
+  7e:	6f 93       	push	r22
+  80:	7f 93       	push	r23
+  82:	8f 93       	push	r24
+  84:	9f 93       	push	r25
+  86:	af 93       	push	r26
+  88:	bf 93       	push	r27
+  8a:	ef 93       	push	r30
+  8c:	ff 93       	push	r31
+	
+	PORTB = ADCH;
+  8e:	85 b1       	in	r24, 0x05	; 5
+  90:	88 bb       	out	0x18, r24	; 24
+	PORTD = ADCH;
+  92:	85 b1       	in	r24, 0x05	; 5
+  94:	82 bb       	out	0x12, r24	; 18
+	int max_value = arr_adc[0];
+	int min_value = arr_adc[0];
+		
+	for (int i =0; i < arr_adc[200]; i++)
+  96:	20 91 2c 01 	lds	r18, 0x012C	; 0x80012c <__bss_end>
+  9a:	30 e0       	ldi	r19, 0x00	; 0
+  9c:	12 16       	cp	r1, r18
+  9e:	13 06       	cpc	r1, r19
+  a0:	34 f4       	brge	.+12     	; 0xae <__vector_14+0x4a>
+  a2:	80 e0       	ldi	r24, 0x00	; 0
+  a4:	90 e0       	ldi	r25, 0x00	; 0
+  a6:	01 96       	adiw	r24, 0x01	; 1
+  a8:	82 17       	cp	r24, r18
+  aa:	93 07       	cpc	r25, r19
+  ac:	e1 f7       	brne	.-8      	; 0xa6 <__vector_14+0x42>
+		}
+		//после нахождения наибольшего и наименьшего элементов нашего массива, вычислим амплитуду
+		int diff_bet_max_min = max_value - min_value;
+	}
+			
+	if (db > 0 && db < 15) // если уровень звука от 0 до 15 дБа
+  ae:	c0 90 60 00 	lds	r12, 0x0060	; 0x800060 <_edata>
+  b2:	d0 90 61 00 	lds	r13, 0x0061	; 0x800061 <_edata+0x1>
+  b6:	e0 90 62 00 	lds	r14, 0x0062	; 0x800062 <_edata+0x2>
+  ba:	f0 90 63 00 	lds	r15, 0x0063	; 0x800063 <_edata+0x3>
+  be:	20 e0       	ldi	r18, 0x00	; 0
+  c0:	30 e0       	ldi	r19, 0x00	; 0
+  c2:	a9 01       	movw	r20, r18
+  c4:	c7 01       	movw	r24, r14
+  c6:	b6 01       	movw	r22, r12
+  c8:	d4 d0       	rcall	.+424    	; 0x272 <__gesf2>
+  ca:	18 16       	cp	r1, r24
+  cc:	64 f4       	brge	.+24     	; 0xe6 <__vector_14+0x82>
+  ce:	20 e0       	ldi	r18, 0x00	; 0
+  d0:	30 e0       	ldi	r19, 0x00	; 0
+  d2:	40 e7       	ldi	r20, 0x70	; 112
+  d4:	51 e4       	ldi	r21, 0x41	; 65
+  d6:	c7 01       	movw	r24, r14
+  d8:	b6 01       	movw	r22, r12
+  da:	a3 d0       	rcall	.+326    	; 0x222 <__cmpsf2>
+  dc:	88 23       	and	r24, r24
+  de:	1c f4       	brge	.+6      	; 0xe6 <__vector_14+0x82>
+	{
+		PORTB = (1 << 0); // загорается первый светодиод
+  e0:	81 e0       	ldi	r24, 0x01	; 1
+  e2:	88 bb       	out	0x18, r24	; 24
+  e4:	89 c0       	rjmp	.+274    	; 0x1f8 <__vector_14+0x194>
+	}
+	else if (db >= 15 && db < 30) // если уровень звука от 15 до 30 дБа
+  e6:	20 e0       	ldi	r18, 0x00	; 0
+  e8:	30 e0       	ldi	r19, 0x00	; 0
+  ea:	40 e7       	ldi	r20, 0x70	; 112
+  ec:	51 e4       	ldi	r21, 0x41	; 65
+  ee:	c7 01       	movw	r24, r14
+  f0:	b6 01       	movw	r22, r12
+  f2:	bf d0       	rcall	.+382    	; 0x272 <__gesf2>
+  f4:	88 23       	and	r24, r24
+  f6:	64 f0       	brlt	.+24     	; 0x110 <__vector_14+0xac>
+  f8:	20 e0       	ldi	r18, 0x00	; 0
+  fa:	30 e0       	ldi	r19, 0x00	; 0
+  fc:	40 ef       	ldi	r20, 0xF0	; 240
+  fe:	51 e4       	ldi	r21, 0x41	; 65
+ 100:	c7 01       	movw	r24, r14
+ 102:	b6 01       	movw	r22, r12
+ 104:	8e d0       	rcall	.+284    	; 0x222 <__cmpsf2>
+ 106:	88 23       	and	r24, r24
+ 108:	1c f4       	brge	.+6      	; 0x110 <__vector_14+0xac>
+	{
+		PORTB = (1 << 0) | (1 << 1); // загораются первый и второй светодиоды
+ 10a:	83 e0       	ldi	r24, 0x03	; 3
+ 10c:	88 bb       	out	0x18, r24	; 24
+ 10e:	74 c0       	rjmp	.+232    	; 0x1f8 <__vector_14+0x194>
+	}
+	else if (db >= 30 && db < 45) // если уровень звука от 30 до 45 дБа
+ 110:	20 e0       	ldi	r18, 0x00	; 0
+ 112:	30 e0       	ldi	r19, 0x00	; 0
+ 114:	40 ef       	ldi	r20, 0xF0	; 240
+ 116:	51 e4       	ldi	r21, 0x41	; 65
+ 118:	c7 01       	movw	r24, r14
+ 11a:	b6 01       	movw	r22, r12
+ 11c:	aa d0       	rcall	.+340    	; 0x272 <__gesf2>
+ 11e:	88 23       	and	r24, r24
+ 120:	64 f0       	brlt	.+24     	; 0x13a <__vector_14+0xd6>
+ 122:	20 e0       	ldi	r18, 0x00	; 0
+ 124:	30 e0       	ldi	r19, 0x00	; 0
+ 126:	44 e3       	ldi	r20, 0x34	; 52
+ 128:	52 e4       	ldi	r21, 0x42	; 66
+ 12a:	c7 01       	movw	r24, r14
+ 12c:	b6 01       	movw	r22, r12
+ 12e:	79 d0       	rcall	.+242    	; 0x222 <__cmpsf2>
+ 130:	88 23       	and	r24, r24
+ 132:	1c f4       	brge	.+6      	; 0x13a <__vector_14+0xd6>
+	{
+		PORTB = (1 << 0) | (1 << 1) | (1 << 2); // загораются первый, второй и третий светодиоды
+ 134:	87 e0       	ldi	r24, 0x07	; 7
+ 136:	88 bb       	out	0x18, r24	; 24
+ 138:	5f c0       	rjmp	.+190    	; 0x1f8 <__vector_14+0x194>
+	}
+	else if (db >= 45 && db < 60) // если уровень звука от 45 до 60 дБа
+ 13a:	20 e0       	ldi	r18, 0x00	; 0
+ 13c:	30 e0       	ldi	r19, 0x00	; 0
+ 13e:	44 e3       	ldi	r20, 0x34	; 52
+ 140:	52 e4       	ldi	r21, 0x42	; 66
+ 142:	c7 01       	movw	r24, r14
+ 144:	b6 01       	movw	r22, r12
+ 146:	95 d0       	rcall	.+298    	; 0x272 <__gesf2>
+ 148:	88 23       	and	r24, r24
+ 14a:	64 f0       	brlt	.+24     	; 0x164 <__vector_14+0x100>
+ 14c:	20 e0       	ldi	r18, 0x00	; 0
+ 14e:	30 e0       	ldi	r19, 0x00	; 0
+ 150:	40 e7       	ldi	r20, 0x70	; 112
+ 152:	52 e4       	ldi	r21, 0x42	; 66
+ 154:	c7 01       	movw	r24, r14
+ 156:	b6 01       	movw	r22, r12
+ 158:	64 d0       	rcall	.+200    	; 0x222 <__cmpsf2>
+ 15a:	88 23       	and	r24, r24
+ 15c:	1c f4       	brge	.+6      	; 0x164 <__vector_14+0x100>
+	{
+		PORTB = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3); // загораются первый, второй, третий и четвертый светодиоды
+ 15e:	8f e0       	ldi	r24, 0x0F	; 15
+ 160:	88 bb       	out	0x18, r24	; 24
+ 162:	4a c0       	rjmp	.+148    	; 0x1f8 <__vector_14+0x194>
+	}
+	else if (db >= 60 && db < 75) // если уровень звука от 60 до 75 дБа
+ 164:	20 e0       	ldi	r18, 0x00	; 0
+ 166:	30 e0       	ldi	r19, 0x00	; 0
+ 168:	40 e7       	ldi	r20, 0x70	; 112
+ 16a:	52 e4       	ldi	r21, 0x42	; 66
+ 16c:	c7 01       	movw	r24, r14
+ 16e:	b6 01       	movw	r22, r12
+ 170:	80 d0       	rcall	.+256    	; 0x272 <__gesf2>
+ 172:	88 23       	and	r24, r24
+ 174:	64 f0       	brlt	.+24     	; 0x18e <__vector_14+0x12a>
+ 176:	20 e0       	ldi	r18, 0x00	; 0
+ 178:	30 e0       	ldi	r19, 0x00	; 0
+ 17a:	46 e9       	ldi	r20, 0x96	; 150
+ 17c:	52 e4       	ldi	r21, 0x42	; 66
+ 17e:	c7 01       	movw	r24, r14
+ 180:	b6 01       	movw	r22, r12
+ 182:	4f d0       	rcall	.+158    	; 0x222 <__cmpsf2>
+ 184:	88 23       	and	r24, r24
+ 186:	1c f4       	brge	.+6      	; 0x18e <__vector_14+0x12a>
+	{
+		PORTB = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4); // загораются первый, второй, третий, четвертый и пятый светодиоды
+ 188:	8f e1       	ldi	r24, 0x1F	; 31
+ 18a:	88 bb       	out	0x18, r24	; 24
+ 18c:	35 c0       	rjmp	.+106    	; 0x1f8 <__vector_14+0x194>
+	}
+	else if (db >= 75 && db < 90) // если уровень звука от 75 до 90 дБа
+ 18e:	20 e0       	ldi	r18, 0x00	; 0
+ 190:	30 e0       	ldi	r19, 0x00	; 0
+ 192:	46 e9       	ldi	r20, 0x96	; 150
+ 194:	52 e4       	ldi	r21, 0x42	; 66
+ 196:	c7 01       	movw	r24, r14
+ 198:	b6 01       	movw	r22, r12
+ 19a:	6b d0       	rcall	.+214    	; 0x272 <__gesf2>
+ 19c:	88 23       	and	r24, r24
+ 19e:	64 f0       	brlt	.+24     	; 0x1b8 <__vector_14+0x154>
+ 1a0:	20 e0       	ldi	r18, 0x00	; 0
+ 1a2:	30 e0       	ldi	r19, 0x00	; 0
+ 1a4:	44 eb       	ldi	r20, 0xB4	; 180
+ 1a6:	52 e4       	ldi	r21, 0x42	; 66
+ 1a8:	c7 01       	movw	r24, r14
+ 1aa:	b6 01       	movw	r22, r12
+ 1ac:	3a d0       	rcall	.+116    	; 0x222 <__cmpsf2>
+ 1ae:	88 23       	and	r24, r24
+ 1b0:	1c f4       	brge	.+6      	; 0x1b8 <__vector_14+0x154>
+	{
+		PORTB = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5); // загораются первый, второй, третий, четвертый, пятый и шестой светодиоды
+ 1b2:	8f e3       	ldi	r24, 0x3F	; 63
+ 1b4:	88 bb       	out	0x18, r24	; 24
+ 1b6:	20 c0       	rjmp	.+64     	; 0x1f8 <__vector_14+0x194>
+	}
+	else if (db >= 90 && db < 105) // если уровень звука от 90 до 105 дБа
+ 1b8:	20 e0       	ldi	r18, 0x00	; 0
+ 1ba:	30 e0       	ldi	r19, 0x00	; 0
+ 1bc:	44 eb       	ldi	r20, 0xB4	; 180
+ 1be:	52 e4       	ldi	r21, 0x42	; 66
+ 1c0:	c7 01       	movw	r24, r14
+ 1c2:	b6 01       	movw	r22, r12
+ 1c4:	56 d0       	rcall	.+172    	; 0x272 <__gesf2>
+ 1c6:	88 23       	and	r24, r24
+ 1c8:	64 f0       	brlt	.+24     	; 0x1e2 <__vector_14+0x17e>
+ 1ca:	20 e0       	ldi	r18, 0x00	; 0
+ 1cc:	30 e0       	ldi	r19, 0x00	; 0
+ 1ce:	42 ed       	ldi	r20, 0xD2	; 210
+ 1d0:	52 e4       	ldi	r21, 0x42	; 66
+ 1d2:	c7 01       	movw	r24, r14
+ 1d4:	b6 01       	movw	r22, r12
+ 1d6:	25 d0       	rcall	.+74     	; 0x222 <__cmpsf2>
+ 1d8:	88 23       	and	r24, r24
+ 1da:	1c f4       	brge	.+6      	; 0x1e2 <__vector_14+0x17e>
+	{
+		PORTB = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5)| (1 << 6); // загораются первый, второй, третий, четвертый, пятый, шестой и седьмой светодиоды
+ 1dc:	8f e7       	ldi	r24, 0x7F	; 127
+ 1de:	88 bb       	out	0x18, r24	; 24
+ 1e0:	0b c0       	rjmp	.+22     	; 0x1f8 <__vector_14+0x194>
+	}
+	else if (db >= 105) // если уровень звука от 105 до 120 дБа
+ 1e2:	20 e0       	ldi	r18, 0x00	; 0
+ 1e4:	30 e0       	ldi	r19, 0x00	; 0
+ 1e6:	42 ed       	ldi	r20, 0xD2	; 210
+ 1e8:	52 e4       	ldi	r21, 0x42	; 66
+ 1ea:	c7 01       	movw	r24, r14
+ 1ec:	b6 01       	movw	r22, r12
+ 1ee:	41 d0       	rcall	.+130    	; 0x272 <__gesf2>
+ 1f0:	88 23       	and	r24, r24
+ 1f2:	14 f0       	brlt	.+4      	; 0x1f8 <__vector_14+0x194>
+	{
+		//PORTB = (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5)| (1 << 6)| (1 << 7) | (1 << 8); // загораются все светодиоды
+		PORTB = 0xFF;
+ 1f4:	8f ef       	ldi	r24, 0xFF	; 255
+ 1f6:	88 bb       	out	0x18, r24	; 24
+	}
+}
+ 1f8:	ff 91       	pop	r31
+ 1fa:	ef 91       	pop	r30
+ 1fc:	bf 91       	pop	r27
+ 1fe:	af 91       	pop	r26
+ 200:	9f 91       	pop	r25
+ 202:	8f 91       	pop	r24
+ 204:	7f 91       	pop	r23
+ 206:	6f 91       	pop	r22
+ 208:	5f 91       	pop	r21
+ 20a:	4f 91       	pop	r20
+ 20c:	3f 91       	pop	r19
+ 20e:	2f 91       	pop	r18
+ 210:	ff 90       	pop	r15
+ 212:	ef 90       	pop	r14
+ 214:	df 90       	pop	r13
+ 216:	cf 90       	pop	r12
+ 218:	0f 90       	pop	r0
+ 21a:	0f be       	out	0x3f, r0	; 63
+ 21c:	0f 90       	pop	r0
+ 21e:	1f 90       	pop	r1
+ 220:	18 95       	reti
+
+00000222 <__cmpsf2>:
+ 222:	03 d0       	rcall	.+6      	; 0x22a <__fp_cmp>
+ 224:	08 f4       	brcc	.+2      	; 0x228 <__cmpsf2+0x6>
+ 226:	81 e0       	ldi	r24, 0x01	; 1
+ 228:	08 95       	ret
+
+0000022a <__fp_cmp>:
+ 22a:	99 0f       	add	r25, r25
+ 22c:	00 08       	sbc	r0, r0
+ 22e:	55 0f       	add	r21, r21
+ 230:	aa 0b       	sbc	r26, r26
+ 232:	e0 e8       	ldi	r30, 0x80	; 128
+ 234:	fe ef       	ldi	r31, 0xFE	; 254
+ 236:	16 16       	cp	r1, r22
+ 238:	17 06       	cpc	r1, r23
+ 23a:	e8 07       	cpc	r30, r24
+ 23c:	f9 07       	cpc	r31, r25
+ 23e:	c0 f0       	brcs	.+48     	; 0x270 <__fp_cmp+0x46>
+ 240:	12 16       	cp	r1, r18
+ 242:	13 06       	cpc	r1, r19
+ 244:	e4 07       	cpc	r30, r20
+ 246:	f5 07       	cpc	r31, r21
+ 248:	98 f0       	brcs	.+38     	; 0x270 <__fp_cmp+0x46>
+ 24a:	62 1b       	sub	r22, r18
+ 24c:	73 0b       	sbc	r23, r19
+ 24e:	84 0b       	sbc	r24, r20
+ 250:	95 0b       	sbc	r25, r21
+ 252:	39 f4       	brne	.+14     	; 0x262 <__fp_cmp+0x38>
+ 254:	0a 26       	eor	r0, r26
+ 256:	61 f0       	breq	.+24     	; 0x270 <__fp_cmp+0x46>
+ 258:	23 2b       	or	r18, r19
+ 25a:	24 2b       	or	r18, r20
+ 25c:	25 2b       	or	r18, r21
+ 25e:	21 f4       	brne	.+8      	; 0x268 <__fp_cmp+0x3e>
+ 260:	08 95       	ret
+ 262:	0a 26       	eor	r0, r26
+ 264:	09 f4       	brne	.+2      	; 0x268 <__fp_cmp+0x3e>
+ 266:	a1 40       	sbci	r26, 0x01	; 1
+ 268:	a6 95       	lsr	r26
+ 26a:	8f ef       	ldi	r24, 0xFF	; 255
+ 26c:	81 1d       	adc	r24, r1
+ 26e:	81 1d       	adc	r24, r1
+ 270:	08 95       	ret
+
+00000272 <__gesf2>:
+ 272:	db df       	rcall	.-74     	; 0x22a <__fp_cmp>
+ 274:	08 f4       	brcc	.+2      	; 0x278 <__gesf2+0x6>
+ 276:	8f ef       	ldi	r24, 0xFF	; 255
+ 278:	08 95       	ret
+
+0000027a <_exit>:
+ 27a:	f8 94       	cli
+
+0000027c <__stop_program>:
+ 27c:	ff cf       	rjmp	.-2      	; 0x27c <__stop_program>
